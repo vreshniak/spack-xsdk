@@ -43,7 +43,7 @@ jobs:
         run: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
 
       - uses: actions/upload-artifact@v2
-        if: ${{ failure() }}
+        if: ${{ always() }}
         with:
           name: ${{ github.job }}-${{ github.run_id }}-${{ github.run_number }}
           path: |
