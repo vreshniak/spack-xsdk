@@ -17,6 +17,7 @@ jobs:
   osx-clang:
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
       matrix:
         os: [macOS, ubuntu]
