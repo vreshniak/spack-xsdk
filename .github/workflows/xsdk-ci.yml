@@ -1,14 +1,16 @@
-# This is a basic workflow to help you get started with Actions
+name: xsdk-ci
 
-name: CI
+env:
+  xsdk-actions: ./github/actions/xsdk
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
-on: workflow_dispatch
+# Controls when the action will run. Triggers the workflow manually and on push / pull 
+# request events for the xsdk branches
+on: 
+  workflow_dispatch:
 #   push:
-#     branches: [ xsdk-0.6.0 ]
+#     branches: '*xsdk*'
 #   pull_request:
-#     branches: [ xsdk-0.6.0 ]
+#     branches: '*xsdk*'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,12 +24,24 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      # Runs a set of commands before main scripts using the runners shell
+      - name: before_script 
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          date
+          hostname
+          if [ -f /etc/os-release ]; then grep PRETTY_NAME /etc/os-release; nproc; lscpu |grep 'Model name'; fi
+          if [ -f /usr/bin/sw_vers ]; then /usr/bin/sw_vers ;sysctl -n hw.ncpu machdep.cpu.brand_string ; fi
+          if [ ! -z ${RM_MODULES+x} ]; then printf "removing modules - ${RM_MODULES}\n"; module list; module remove ${RM_MODULES}; fi
+          if [ ! -z ${LOAD_MODULES+x} ]; then printf "loading modules - ${LOAD_MODULES}\n"; module load ${LOAD_MODULES}; module list; fi
+ 
+
+      # Runs build scripts
+      - name: mac
+        run: python3 ./bin/spack install xsdk%apple-clang@11.0.3 ^arpack-ng fflags=-fallow-argument-mismatch
+
+
+      # Runs a set of commands after main scripts using the runners shell
+      - name: after_script
+        run: |
+          date
+          ./bin/spack find -v
