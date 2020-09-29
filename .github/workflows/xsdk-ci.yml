@@ -37,7 +37,7 @@ jobs:
 
       # Runs build scripts
       - name: mac
-        run: python3 ./bin/spack install xsdk%apple-clang@10.0.1 ^arpack-ng fflags=-fallow-argument-mismatch
+        run: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
 
 
       # Runs a set of commands after main scripts using the runners shell
