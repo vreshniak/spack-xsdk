@@ -14,14 +14,12 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   osx-clang:
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macOS, ubuntu]
-        compiler: [clang@10.0.1-apple]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -41,7 +39,7 @@ jobs:
 
       # Runs build scripts
       - name: build
-        run: python3 ./bin/spack install xsdk%${{ compiler }} ^arpack-ng fflags=-fallow-argument-mismatch
+        run: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
 
 
       # Runs a set of commands after main scripts using the runners shell
