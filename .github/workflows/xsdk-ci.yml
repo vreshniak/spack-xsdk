@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: [macOS]
         compiler: [clang@10.0.1-apple]
-        options: [ ]
+        # options: [ ]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -26,4 +26,4 @@ jobs:
 #       - uses: ./.github/actions/build-xsdk
       - uses: vreshniak/misc/.github/actions/build-xsdk
         with:
-          cmd: 'python3 ./bin/spack install xsdk%${{ matrix.compiler }} ^arpack-ng fflags=-fallow-argument-mismatch ${{ matrix.options }}' 
+          cmd: 'python3 ./bin/spack install xsdk%${{ matrix.compiler }} ^arpack-ng fflags=-fallow-argument-mismatch' 
