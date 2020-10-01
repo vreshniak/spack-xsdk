@@ -2,6 +2,7 @@ name: xsdk-ci
 
 env:
   xsdk-actions: ./github/actions/xsdk
+  compiler: clang@10.0.1-apple
 
 # Controls when the action will run. Triggers the workflow manually and on push / pull 
 # request events for the xsdk branches
@@ -20,16 +21,16 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        os: [macOS, ubuntu]
+        os: [macOS]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         
-      - uses: ./.github/actions/build-xsdk
+      - uses: ${{ env.xsdk-actions }}/build-xsdk
         with:
-          cmd: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
+          cmd: 'python3 ./bin/spack install xsdk%${{ env.compiler }} ^arpack-ng fflags=-fallow-argument-mismatch'
       
 
 
