@@ -17,7 +17,7 @@ runs:
         if [ -f /usr/bin/sw_vers ]; then /usr/bin/sw_vers ;sysctl -n hw.ncpu machdep.cpu.brand_string ; fi
         if [ ! -z ${RM_MODULES+x} ]; then printf "removing modules - ${RM_MODULES}\n"; module list; module remove ${RM_MODULES}; fi
         if [ ! -z ${LOAD_MODULES+x} ]; then printf "loading modules - ${LOAD_MODULES}\n"; module load ${LOAD_MODULES}; module list; fi
-        echo Running command: ${{ inputs.cmd }}
+        echo command: ${{ inputs.cmd }}
       shell: bash
     
     # Runs build scripts
