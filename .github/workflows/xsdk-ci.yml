@@ -1,7 +1,7 @@
 name: xsdk-ci
 
 env:
-  xsdk-actions: ./github/actions/xsdk
+  xsdk-actions: ./github/actions
   compiler: clang@10.0.1-apple
 
 # Controls when the action will run. Triggers the workflow manually and on push / pull 
