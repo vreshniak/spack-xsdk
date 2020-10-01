@@ -1,42 +1,64 @@
-# This is a basic workflow to help you get started with Actions
+name: xsdk-ci
 
-name: CI
+env:
+  xsdk-actions: ./github/actions/xsdk
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# Controls when the action will run. Triggers the workflow manually and on push / pull 
+# request events for the xsdk branches
 on: 
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags' 
-
 #   push:
-#     branches: [ xsdk-0.6.0 ]
+#     branches: '*xsdk*'
 #   pull_request:
-#     branches: [ xsdk-0.6.0 ]
+#     branches: '*xsdk*'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  osx-clang:
     # The type of runner that the job will run on
-    runs-on: self-hosted
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+    strategy:
+      matrix:
+        os: [macOS, ubuntu]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        
+      - uses: ./github/actions/build-xsdk
+        with:
+          script: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
+      
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+#       # Runs a set of commands before main scripts using the runners shell
+#       - name: before_script 
+#         run: |
+#           date
+#           hostname
+#           if [ -f /etc/os-release ]; then grep PRETTY_NAME /etc/os-release; nproc; lscpu |grep 'Model name'; fi
+#           if [ -f /usr/bin/sw_vers ]; then /usr/bin/sw_vers ;sysctl -n hw.ncpu machdep.cpu.brand_string ; fi
+#           if [ ! -z ${RM_MODULES+x} ]; then printf "removing modules - ${RM_MODULES}\n"; module list; module remove ${RM_MODULES}; fi
+#           if [ ! -z ${LOAD_MODULES+x} ]; then printf "loading modules - ${LOAD_MODULES}\n"; module load ${LOAD_MODULES}; module list; fi
+ 
+
+#       # Runs build scripts
+#       - name: build
+#         run: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
+
+#       - uses: actions/upload-artifact@v2
+#         if: ${{ always() }}
+#         with:
+#           name: ${{ github.job }}-${{ github.run_id }}-${{ github.run_number }}
+#           path: |
+#             spack-stage/*/spack-build-out.txt
+#             spack-stage/*/*/spack-build-out.txt
+
+#       # Runs a set of commands after main scripts using the runners shell
+#       - name: after_script
+#         if: ${{ always() }}
+#         run: |
+#           date
+#           ./bin/spack find -v
