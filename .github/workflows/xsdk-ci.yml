@@ -1,66 +1,28 @@
 name: xsdk-ci
 
-env:
-  xsdk-actions: ./.github/actions
-  compiler: clang@10.0.1-apple
-
 # Controls when the action will run. Triggers the workflow manually and on push / pull 
 # request events for the xsdk branches
 on: 
   workflow_dispatch:
 #   push:
-#     branches: '*xsdk*'
+#     branches: $default_branch
 #   pull_request:
-#     branches: '*xsdk*'
+#     branches: $default_branch
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   osx-clang:
-    # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     strategy:
       matrix:
         os: [macOS]
         compiler: [clang@10.0.1-apple]
-
+        options: []
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-        
       - uses: ./.github/actions/build-xsdk
         with:
-          cmd: 'python3 ./bin/spack install xsdk%${{ matrix.compiler }} ^arpack-ng fflags=-fallow-argument-mismatch'
-      
-
-
-#       # Runs a set of commands before main scripts using the runners shell
-#       - name: before_script 
-#         run: |
-#           date
-#           hostname
-#           if [ -f /etc/os-release ]; then grep PRETTY_NAME /etc/os-release; nproc; lscpu |grep 'Model name'; fi
-#           if [ -f /usr/bin/sw_vers ]; then /usr/bin/sw_vers ;sysctl -n hw.ncpu machdep.cpu.brand_string ; fi
-#           if [ ! -z ${RM_MODULES+x} ]; then printf "removing modules - ${RM_MODULES}\n"; module list; module remove ${RM_MODULES}; fi
-#           if [ ! -z ${LOAD_MODULES+x} ]; then printf "loading modules - ${LOAD_MODULES}\n"; module load ${LOAD_MODULES}; module list; fi
- 
-
-#       # Runs build scripts
-#       - name: build
-#         run: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
-
-#       - uses: actions/upload-artifact@v2
-#         if: ${{ always() }}
-#         with:
-#           name: ${{ github.job }}-${{ github.run_id }}-${{ github.run_number }}
-#           path: |
-#             spack-stage/*/spack-build-out.txt
-#             spack-stage/*/*/spack-build-out.txt
-
-#       # Runs a set of commands after main scripts using the runners shell
-#       - name: after_script
-#         if: ${{ always() }}
-#         run: |
-#           date
-#           ./bin/spack find -v
+          cmd: 'python3 ./bin/spack install xsdk%${{ matrix.compiler }} ^arpack-ng fflags=-fallow-argument-mismatch ${{ matrix.options }}' 
