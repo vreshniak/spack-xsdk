@@ -24,6 +24,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       # - uses: ./.github/actions/build-xsdk
-      - uses: vreshniak/misc@v1
+      - uses: vreshniak/misc@v2
         with:
           cmd: 'python3 ./bin/spack install xsdk%${{ matrix.compiler }} ^arpack-ng fflags=-fallow-argument-mismatch' 
