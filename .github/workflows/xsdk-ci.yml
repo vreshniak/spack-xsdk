@@ -29,7 +29,7 @@ jobs:
         
       - uses: ./.github/actions/build-xsdk
         with:
-          script: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
+          cmd: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
       
 
 
