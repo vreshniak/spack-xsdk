@@ -24,35 +24,39 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: ./github/actions/build-xsdk
+        with:
+          script: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
+      
+#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#       - uses: actions/checkout@v2
 
-      # Runs a set of commands before main scripts using the runners shell
-      - name: before_script 
-        run: |
-          date
-          hostname
-          if [ -f /etc/os-release ]; then grep PRETTY_NAME /etc/os-release; nproc; lscpu |grep 'Model name'; fi
-          if [ -f /usr/bin/sw_vers ]; then /usr/bin/sw_vers ;sysctl -n hw.ncpu machdep.cpu.brand_string ; fi
-          if [ ! -z ${RM_MODULES+x} ]; then printf "removing modules - ${RM_MODULES}\n"; module list; module remove ${RM_MODULES}; fi
-          if [ ! -z ${LOAD_MODULES+x} ]; then printf "loading modules - ${LOAD_MODULES}\n"; module load ${LOAD_MODULES}; module list; fi
+#       # Runs a set of commands before main scripts using the runners shell
+#       - name: before_script 
+#         run: |
+#           date
+#           hostname
+#           if [ -f /etc/os-release ]; then grep PRETTY_NAME /etc/os-release; nproc; lscpu |grep 'Model name'; fi
+#           if [ -f /usr/bin/sw_vers ]; then /usr/bin/sw_vers ;sysctl -n hw.ncpu machdep.cpu.brand_string ; fi
+#           if [ ! -z ${RM_MODULES+x} ]; then printf "removing modules - ${RM_MODULES}\n"; module list; module remove ${RM_MODULES}; fi
+#           if [ ! -z ${LOAD_MODULES+x} ]; then printf "loading modules - ${LOAD_MODULES}\n"; module load ${LOAD_MODULES}; module list; fi
  
 
-      # Runs build scripts
-      - name: build
-        run: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
+#       # Runs build scripts
+#       - name: build
+#         run: python3 ./bin/spack install xsdk%clang@10.0.1-apple ^arpack-ng fflags=-fallow-argument-mismatch
 
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: ${{ github.job }}-${{ github.run_id }}-${{ github.run_number }}
-          path: |
-            spack-stage/*/spack-build-out.txt
-            spack-stage/*/*/spack-build-out.txt
+#       - uses: actions/upload-artifact@v2
+#         if: ${{ always() }}
+#         with:
+#           name: ${{ github.job }}-${{ github.run_id }}-${{ github.run_number }}
+#           path: |
+#             spack-stage/*/spack-build-out.txt
+#             spack-stage/*/*/spack-build-out.txt
 
-      # Runs a set of commands after main scripts using the runners shell
-      - name: after_script
-        if: ${{ always() }}
-        run: |
-          date
-          ./bin/spack find -v
+#       # Runs a set of commands after main scripts using the runners shell
+#       - name: after_script
+#         if: ${{ always() }}
+#         run: |
+#           date
+#           ./bin/spack find -v
