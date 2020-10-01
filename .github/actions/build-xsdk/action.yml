@@ -37,3 +37,10 @@ runs:
       shell: bash
 
 
+#       - uses: actions/upload-artifact@v2
+#         if: ${{ always() }}
+#         with:
+#           name: ${{ github.job }}-${{ github.run_id }}-${{ github.run_number }}
+#           path: |
+#             spack-stage/*/spack-build-out.txt
+#             spack-stage/*/*/spack-build-out.txt
